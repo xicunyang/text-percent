@@ -77,6 +77,7 @@ function App() {
         setCurrentProcess(e.data.data);
       }
     };
+  // eslint-disable-next-line
   }, []);
 
   const onChange = (ev: any) => {
