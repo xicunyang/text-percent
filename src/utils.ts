@@ -64,3 +64,41 @@ export const genCopy = (text: string) => {
   // 移除 textarea 元素
   document.body.removeChild(textarea);
 };
+
+
+// @ts-ignore
+export function bingfa(tasks, concurrency) {
+  let index = 0;
+  let running = 0;
+
+  // @ts-ignore
+  function runTask(task) {
+      running++;
+      task().then(() => {
+          running--;
+          runNext();
+      });
+  }
+
+  function runNext() {
+      while (running < concurrency && index < tasks.length) {
+          runTask(tasks[index]);
+          index++;
+      }
+  }
+
+  runNext();
+}
+
+// 模拟任务函数，返回一个Promise
+// @ts-ignore
+function 模拟任务(index) {
+  return new Promise(resolve => {
+      console.log('开始任务', index);
+      setTimeout(() => {
+          console.log('完成任务', index);
+          // @ts-ignore
+          resolve();
+      }, Math.random() * 1000); // 模拟异步操作
+  });
+}
