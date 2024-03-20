@@ -28,6 +28,7 @@ jobs:
         run: |
           npm install pnpm -g
           pnpm install
+          export CI=false
           pnpm run build
 
       - name: Deploy   # 部署
