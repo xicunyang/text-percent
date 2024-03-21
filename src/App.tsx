@@ -146,7 +146,7 @@ function App() {
         var jsonArr: any[] = XLSX.utils.sheet_to_json(worksheet); //解析成html
 
         const contentArr = jsonArr.map((item) => {
-          return item["内容"];
+          return item["内容"]?.replaceAll("\n","");
         });
 
         setAllCount(contentArr?.length);
@@ -207,9 +207,7 @@ function App() {
 
   return (
     <div style={{ padding: "16px" }}>
-      
-
-      <div style={{ display: "flex", alignItems: "center", }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
         <div>并发计算数量(开启N个线程并发计算)：</div>
         <InputNumber
           style={{ width: "100px" }}
@@ -219,7 +217,7 @@ function App() {
         />
       </div>
 
-      <div style={{ display: "flex", alignItems: "center" ,marginTop: "16px" }}>
+      <div style={{ display: "flex", alignItems: "center", marginTop: "16px" }}>
         <div>切片数量（把总条数切分，每个子条数的数量）：</div>
         <InputNumber
           style={{ width: "100px" }}
@@ -255,11 +253,22 @@ function App() {
           style={{ marginTop: "16px" }}
           onClick={() => {
             const text = resultArr.current.map((i) => i.percent).join("\n");
-
             genCopy(text);
           }}
         >
-          复制结果
+          复制相似度结果
+        </Button>
+      )}
+
+      {Boolean(calcDone) && (
+        <Button
+          style={{ marginTop: "16px", marginLeft :"16px"}}
+          onClick={() => {
+            const text = resultArr.current.map((i) => i.target).join("\n");
+            genCopy(text);
+          }}
+        >
+          复制相似度文案
         </Button>
       )}
 
