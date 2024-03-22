@@ -116,6 +116,7 @@ function App() {
 
                   resultArr.current = oldArr;
 
+                  setRefreshKey(new Date().getTime());
                   _worker.terminate();
                   r(e);
                 }
@@ -166,16 +167,10 @@ function App() {
   };
 
   const calcDone = React.useMemo(() => {
-    if (!processArr.length) return false;
+    if(!resultArr.current?.length) return;
+    return resultArr.current.every(i => i.source)
 
-    let isNotDone = false;
-    processArr.forEach((i) => {
-      if (i.all !== i.current) {
-        isNotDone = true;
-      }
-    });
-    return !isNotDone;
-  }, [processArr]);
+  }, [refreshKey]);
 
   React.useEffect(() => {
     if (!calcDone) return;
@@ -197,11 +192,13 @@ function App() {
       ) {
         resultArr.current[index] = {
           ...resultArr.current[index],
+          targetIndex: targetItem.index,
           target: targetItem?.source,
           percent: targetItem?.percent,
         };
       }
     });
+
     setRefreshKey(new Date().getTime());
   }, [calcDone]);
 

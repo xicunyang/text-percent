@@ -3,7 +3,6 @@ import "./index.css";
 import * as XLSX from "xlsx";
 import moment from "moment";
 import { calcTime, formatTime } from "./helper";
-import { testTime } from "./test";
 import { Button, Table } from "antd";
 import { genCopy } from "../utils";
 
@@ -33,17 +32,17 @@ const Time: React.FC<IProps> = () => {
           const _time = typeof time === "number" ? changeDate(time) : "-";
 
           const calcRes = calcTime(item["内容"]);
-
+          
           const pickTime = formatTime(calcRes.matches?.[0] || "文本内无时间");
           const times = moment(_time).format("MM-DD");
           const isSame =
             pickTime && pickTime === times
-              ? 1
+              ? "符合"
               : pickTime === "文本内无时间"
-              ? 0
-              : -1;
-
+              ? "文本无时间"
+              : "时间不吻合";
           return {
+            res0: calcRes.matches?.[0],
             content: item["内容"],
             pickTime,
             time: times,
@@ -76,9 +75,6 @@ const Time: React.FC<IProps> = () => {
           >
             复制时间是否准确列
           </Button>
-          <span style={{ marginLeft: "10px" }}>
-            1代表文本内的时间=上报时间，0代表文本内无时间，-1代表文本内的时间!=上报时间
-          </span>
         </div>
       )}
 
@@ -108,9 +104,6 @@ const Time: React.FC<IProps> = () => {
             title: "时间是否准确",
             dataIndex: "isSame",
             width: "140px",
-            // @ts-ignore
-            sorter: (a, b) => a.isSame - b.isSame,
-            defaultSortOrder: "descend",
           },
         ]}
         dataSource={result}

@@ -111,6 +111,8 @@ export const calcTime = (time: string) => {
 };
 
 export const formatTime = (time: string) => {
+  if(time === "文本内无时间") return "文本内无时间"
+
   const fTime = time
     .replaceAll("年", ".")
     .replaceAll("月", ".")
@@ -126,7 +128,10 @@ export const formatTime = (time: string) => {
     res = sRes.join(".");
   }
 
-  if(time === "文本内无时间") return "文本内无时间"
 
-  return moment(`2024.${res}`).format("MM-DD");
+  const ress = moment(`2024.${res}`).format("MM-DD");
+  if(ress === "Invalid date") {
+    return "-"
+  }
+  return ress;
 };
