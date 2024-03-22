@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/custom-label-percent/static/css/main.246adca9.css",
-    "main.js": "/custom-label-percent/static/js/main.497b2164.js",
-    "index.html": "/custom-label-percent/index.html",
-    "main.246adca9.css.map": "/custom-label-percent/static/css/main.246adca9.css.map",
-    "main.497b2164.js.map": "/custom-label-percent/static/js/main.497b2164.js.map"
+    "main.css": "/text-percent/static/css/main.246adca9.css",
+    "main.js": "/text-percent/static/js/main.497b2164.js",
+    "index.html": "/text-percent/index.html",
+    "main.246adca9.css.map": "/text-percent/static/css/main.246adca9.css.map",
+    "main.497b2164.js.map": "/text-percent/static/js/main.497b2164.js.map"
   },
   "entrypoints": [
     "static/css/main.246adca9.css",
