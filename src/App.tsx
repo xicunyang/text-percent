@@ -45,11 +45,11 @@ function App() {
     worker.onmessage = function (e) {
       // @ts-ignore
       if (e.data.type === "preSplit") {
+        worker.terminate();
+        
         const SPLIT_NUM = splitNum;
         const splitRes = e.data.data;
         const { origin: originArr, split: splitArr } = splitRes;
-
-        console.log("splitRes:::", splitRes);
 
         // @ts-ignore
         resultArr.current = originArr.map((_, index) => [
