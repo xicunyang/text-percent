@@ -55,11 +55,7 @@ self.onmessage = function (e) {
     const groupIndex = e.data?.data?.index; // [["我", "好像"...],[],[]]
     const splitNum = e.data?.data?.splitNum; // [["我", "好像"...],[],[]]
 
-    // console.log("splitArr:::", e.data?.data);
-
     const cache = [];
-
-    const _testCache = [];
 
     // 初始化数组遍历（切片）
     originArr.forEach((currentRowContent, index) => {
@@ -69,21 +65,8 @@ self.onmessage = function (e) {
       const afterArr = allOriginArr.slice(calcIndex + 1);
       const afterSplitArr = allSplitArr.slice(calcIndex + 1);
 
-      _testCache.push({
-        afterArr,
-        afterSplitArr,
-      });
-
       afterArr.forEach((_, otherIndex) => {
-        // console.log('afterArr:::', _);
-        // if (calcIndex === otherIndex) {
-        //   return;
-        // }
-        const textAArr = splitArr[index];
-        const textBArr = afterSplitArr[otherIndex];
-        const percent = compareSentences(textAArr, textBArr);
-
-        percentArr.push(percent);
+        percentArr.push(compareSentences(splitArr[index], afterSplitArr[otherIndex]));
       });
 
       // 取最大值
@@ -96,18 +79,6 @@ self.onmessage = function (e) {
           maxPercent = currentPercent;
         }
       });
-
-      // if (maxPercent > 0.95) {
-      //   console.log(
-      //     "afterArr[maxPercentIndex]:::",
-      //     currentRowContent,
-      //     "-----",
-      //     afterArr[maxPercentIndex],
-      //     afterSplitArr[maxPercentIndex],
-      //     maxPercent
-      //   );
-      // }
-      //   console.log('maxPercentIndex:::', percentArr, maxPercentIndex);
 
       // @ts-ignore
       delete percentArr;
@@ -127,8 +98,6 @@ self.onmessage = function (e) {
         },
       });
     });
-
-    // console.log("done-----", originArr, _testCache);
 
     self.postMessage({
       type: "calcDone",
