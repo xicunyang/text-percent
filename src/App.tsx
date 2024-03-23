@@ -1,17 +1,21 @@
-import React, { useRef, useState } from "react";
-import { Button, Input, InputNumber, Table } from "antd";
+import React, { useRef } from "react";
+import { Button, InputNumber, Table, Tooltip } from "antd";
 import "./App.css";
 // @ts-ignore
 import * as XLSX from "xlsx";
 import { bingfa, genCopy } from "./utils";
-import { compareSentences } from "./percentV2";
+import HelperIcon from "./components/helper-icon";
+import Upload from "./components/upload";
+import Title from "./components/title";
 const worker = new Worker("work.js");
 
+const DefaultBatchNum = 5;
+const DefaultSplitNum = 1000;
+
 function App() {
-  const [batchNum, setBatchNum] = React.useState(5);
-  const [splitNum, setSplitNum] = React.useState(1000);
+  const [batchNum, setBatchNum] = React.useState(DefaultBatchNum);
+  const [splitNum, setSplitNum] = React.useState(DefaultSplitNum);
   const [currentProcess, setCurrentProcess] = React.useState(0);
-  const [allCount, setAllCount] = React.useState(0);
   const [refreshKey, setRefreshKey] = React.useState(0);
   const [processArr, setProcessArr] = React.useState<
     Array<{
@@ -19,6 +23,7 @@ function App() {
       current: number;
     }>
   >([]);
+  const [uploadJsonArr, setUploadJsonArr] = React.useState<any[]>([]);
 
   const resultArr = useRef<Array<any>>([]);
 
@@ -28,6 +33,13 @@ function App() {
       data: contentArr,
     });
   };
+
+  const handleReset = () => {
+    setCurrentProcess(0);
+    setProcessArr([]);
+    resultArr.current = [];
+    setRefreshKey(new Date().getTime());
+  }
 
   React.useEffect(() => {
     worker.onmessage = function (e) {
@@ -135,41 +147,19 @@ function App() {
     // eslint-disable-next-line
   }, [batchNum, splitNum]);
 
-  const onChange = (ev: any) => {
-    var reader = new FileReader();
-    reader.onload = function (e: any) {
-      try {
-        var data = e.target.result;
-        var workbook = XLSX.read(data, { type: "binary" });
-        var sheetNames = workbook.SheetNames; // 工作表名称集合
-        var worksheet = workbook.Sheets[sheetNames[0]]; // 只读取第一张sheet
+  const handleUploadChange = (jsonList: any[]) => {
+    handleReset();
 
-        var jsonArr: any[] = XLSX.utils.sheet_to_json(worksheet); //解析成html
+    const contentArr = jsonList.map((item) => {
+      return item["内容"]?.replaceAll("\n", "");
+    });
 
-        const contentArr = jsonArr.map((item) => {
-          return item["内容"]?.replaceAll("\n","");
-        });
-
-        setAllCount(contentArr?.length);
-        preDoSplit(contentArr);
-        // preDoSplit([
-        //   "一月十日早晨王俊凯请来货运车发货时，由于车辆较大，把李易峰家的网线跟监控线，挂断了，事后李某发现网络异常，出门查看，找到旁边货运司机理论索要赔偿，因意见不一致，产生纠纷，经祝某调解，双方达成一致，已和解。",
-        //   "今天早晨祝某请来货运车发货时，由于车辆较大，把李某家的网线跟监控线，挂断了，事后李某发现网络异常，出门查看，找到旁边货运司机理论索要赔偿，因意见不一致，产生纠纷，经祝某调解，双方达成一致，已和解。",
-        //   // "1",
-        //   // "2",
-        // ]);
-      } catch (err) {
-        console.log(err);
-        return false;
-      }
-    };
-    reader.readAsBinaryString(ev.target.files[0]);
+    setUploadJsonArr(contentArr);
   };
 
   const calcDone = React.useMemo(() => {
-    if(!resultArr.current?.length) return;
-    return resultArr.current.every(i => i.source)
-
+    if (!resultArr.current?.length) return;
+    return resultArr.current.every((i) => i.source);
   }, [refreshKey]);
 
   React.useEffect(() => {
@@ -178,7 +168,13 @@ function App() {
 
     resultArr.current.forEach((item) => {
       const key = item.targetIndex;
-      cacheMap[key] = item;
+      if (cacheMap[key]) {
+        if (cacheMap[key].percent < item.percent) {
+          cacheMap[key] = item;
+        }
+      } else {
+        cacheMap[key] = item;
+      }
     });
 
     resultArr.current.forEach((item, index) => {
@@ -202,92 +198,138 @@ function App() {
     setRefreshKey(new Date().getTime());
   }, [calcDone]);
 
+  const handleDoCalc = () => {
+    preDoSplit(uploadJsonArr);
+  };
+
   return (
     <div style={{ padding: "16px" }}>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <div>并发计算数量(开启N个线程并发计算)：</div>
-        <InputNumber
-          style={{ width: "100px" }}
-          placeholder="并发计算数量"
-          value={batchNum}
-          onChange={(e) => setBatchNum(Number(e))}
-        />
-      </div>
+      <Title title="文本余弦相似度计算 ( v1.0 )" />
 
-      <div style={{ display: "flex", alignItems: "center", marginTop: "16px" }}>
-        <div>切片数量（把总条数切分，每个子条数的数量）：</div>
-        <InputNumber
-          style={{ width: "100px" }}
-          placeholder="切片数量"
-          value={splitNum}
-          onChange={(e) => setSplitNum(Number(e))}
-        />
-      </div>
+      <Upload onChange={handleUploadChange} />
 
-      <input style={{ marginTop: "16px" }} type="file" onChange={onChange} />
+      {Boolean(uploadJsonArr?.length) && (
+        <>
+          <div style={{ marginTop: "16px" }}>
+            总行数: {uploadJsonArr?.length}
+          </div>
 
-      {allCount > 0 && (
-        <div style={{ marginTop: "16px" }}>
-          分词中: {currentProcess + 1} / {allCount}
-        </div>
-      )}
+          <div
+            style={{ display: "flex", alignItems: "center", marginTop: "16px" }}
+          >
+            <div>
+              并发计算数量
+              <HelperIcon tooltipTitle={"开启N个线程并发计算"} />：
+            </div>
+            <InputNumber
+              style={{ width: "100px" }}
+              placeholder="并发计算数量"
+              value={batchNum}
+              onChange={(e) => setBatchNum(Number(e))}
+            />
+          </div>
 
-      {Boolean(processArr?.length) && (
-        <div style={{ marginTop: "16px" }}>
-          <div>计算进度：</div>
-          {processArr.map((item, idx) => {
-            return (
-              <div>
-                {item.current}/{item.all}
-              </div>
-            );
-          })}
-        </div>
-      )}
+          <div
+            style={{ display: "flex", alignItems: "center", marginTop: "16px" }}
+          >
+            <div>
+              切片数量
+              <HelperIcon tooltipTitle={"把总条数切分，每个子条数的数量"} />：
+            </div>
+            <InputNumber
+              style={{ width: "100px" }}
+              placeholder="切片数量"
+              value={splitNum}
+              onChange={(e) => setSplitNum(Number(e))}
+            />
+          </div>
 
-      {Boolean(calcDone) && (
-        <Button
-          style={{ marginTop: "16px" }}
-          onClick={() => {
-            const text = resultArr.current.map((i) => i.percent).join("\n");
-            genCopy(text);
-          }}
-        >
-          复制相似度结果
-        </Button>
-      )}
+          <Tooltip
+            title={uploadJsonArr?.length ? "" : "请上传文件后再开始分析"}
+            placement="right"
+          >
+            <Button
+              disabled={!Boolean(uploadJsonArr?.length)}
+              style={{ marginTop: "16px" }}
+              type="primary"
+              onClick={handleDoCalc}
+            >
+              开始分析
+            </Button>
+          </Tooltip>
 
-      {Boolean(calcDone) && (
-        <Button
-          style={{ marginTop: "16px", marginLeft :"16px"}}
-          onClick={() => {
-            const text = resultArr.current.map((i) => i.target).join("\n");
-            genCopy(text);
-          }}
-        >
-          复制相似度文案
-        </Button>
-      )}
+          {currentProcess > 0 && (
+            <div style={{ marginTop: "16px" }}>
+              预分词进度: {currentProcess + 1} / {uploadJsonArr.length}
+            </div>
+          )}
 
-      {calcDone && (
-        <div>
-          <Table
-            key={refreshKey}
-            style={{ marginTop: "16px" }}
-            rowKey={"index"}
-            columns={[
-              { title: "源文本", dataIndex: "source" },
-              { title: "最相似目标文本", dataIndex: "target" },
-              {
-                title: "相似度",
-                dataIndex: "percent",
-                sorter: (a, b) => a.percent - b.percent,
-                defaultSortOrder: "descend",
-              },
-            ]}
-            dataSource={resultArr.current}
-          />
-        </div>
+          {Boolean(processArr?.length) && (
+            <div style={{ marginTop: "16px" }}>
+              {processArr?.length === 1 ? (
+                <div>
+                  计算进度: {processArr?.[0]?.current} / {processArr?.[0]?.all}
+                </div>
+              ) : (
+                <>
+                  <div>计算进度: </div>
+                  {processArr.map((item, idx) => {
+                    return (
+                      <div>
+                        {item.current} / {item.all}
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </div>
+          )}
+
+          {Boolean(calcDone) && (
+            <Button
+              style={{ marginTop: "16px" }}
+              onClick={() => {
+                const text = resultArr.current.map((i) => i.percent).join("\n");
+                genCopy(text);
+              }}
+            >
+              复制相似度结果
+            </Button>
+          )}
+
+          {Boolean(calcDone) && (
+            <Button
+              style={{ marginTop: "16px", marginLeft: "16px" }}
+              onClick={() => {
+                const text = resultArr.current.map((i) => i.target).join("\n");
+                genCopy(text);
+              }}
+            >
+              复制相似度文案
+            </Button>
+          )}
+
+          {calcDone && (
+            <div>
+              <Table
+                key={refreshKey}
+                style={{ marginTop: "16px" }}
+                rowKey={"index"}
+                columns={[
+                  { title: "源文本", dataIndex: "source" },
+                  { title: "最相似目标文本", dataIndex: "target" },
+                  {
+                    title: "相似度",
+                    dataIndex: "percent",
+                    sorter: (a, b) => a.percent - b.percent,
+                    defaultSortOrder: "descend",
+                  },
+                ]}
+                dataSource={resultArr.current}
+              />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

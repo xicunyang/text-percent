@@ -2,8 +2,8 @@
   "name": "text-percent",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://xicunyang.github.io/text-percent",
   "dependencies": {
+    "@ant-design/icons": "^4.8.3",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
