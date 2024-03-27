@@ -52,7 +52,7 @@ const Time: React.FC<IProps> = () => {
 
   return (
     <div className="time-main">
-      <Title title="时间合法过滤 ( v1.0 )" />
+      <Title title="时间合法过滤 ( v1.1 )" />
 
       <Upload onChange={handleUploadChange} />
 

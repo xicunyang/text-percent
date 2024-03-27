@@ -2,15 +2,7 @@ import moment from "moment";
 
 export const calcTime = (time: string) => {
   const changeChi = time
-    .replaceAll("十一", "11")
-    .replaceAll("十二", "12")
-    .replaceAll("十三", "13")
-    .replaceAll("十四", "14")
-    .replaceAll("十五", "15")
-    .replaceAll("十六", "16")
-    .replaceAll("十七", "17")
-    .replaceAll("十八", "18")
-    .replaceAll("十九", "19")
+
     .replaceAll("二十一", "21")
     .replaceAll("二十二", "22")
     .replaceAll("二十三", "23")
@@ -87,8 +79,18 @@ export const calcTime = (time: string) => {
     .replaceAll("八十八", "88")
     .replaceAll("八十九", "89")
     .replaceAll("八十", "80")
-
     .replaceAll("九十", "90")
+
+    .replaceAll("十一", "11")
+    .replaceAll("十二", "12")
+    .replaceAll("十三", "13")
+    .replaceAll("十四", "14")
+    .replaceAll("十五", "15")
+    .replaceAll("十六", "16")
+    .replaceAll("十七", "17")
+    .replaceAll("十八", "18")
+    .replaceAll("十九", "19")
+
     .replaceAll("一", "1")
     .replaceAll("二", "2")
     .replaceAll("三", "3")
