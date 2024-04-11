@@ -119,14 +119,16 @@ const Active: React.FC<IProps> = () => {
 
       let dynamicMap: Record<string, number> = {};
       allDays.forEach((day) => {
-        let count = 0;
-        if (result[resultKey].actionDays?.includes(day)) {
-          count += 1;
-        }
+        let isWork =false;
+        let isAction = false;
         if (result[resultKey].workDays?.includes(day)) {
-          count += 1;
+          isWork =true;
         }
-        dynamicMap[day] = count;
+        if (result[resultKey].actionDays?.includes(day)) {
+          isAction = true;
+        }
+        // @ts-ignore
+        dynamicMap[day] = isWork && isAction ? 1 : isAction ? 1 : isWork ? 2 : "";
       });
 
       return {
@@ -197,7 +199,7 @@ const Active: React.FC<IProps> = () => {
     const content = result.map((row) => {
       const rows = [row.县区, row.街镇, row.村社, row.网格];
       sortedAllDays.forEach((day) => {
-        rows.push(row[day] || "0");
+        rows.push(row[day] || "");
       });
       rows.push(row.开展工作天数);
       rows.push(row.事件上报天数);
