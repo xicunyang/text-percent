@@ -1,14 +1,17 @@
 {
   "name": "text-percent",
   "version": "0.1.0",
-  "homepage": "https://xicunyang.github.io/text-percent",
+"homepage": "https://xicunyang.github.io/text-percent",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.8.3",
+    "@tensorflow-models/qna": "^1.0.2",
+    "@tensorflow/tfjs": "^4.17.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
+    "@types/lodash": "^4.17.0",
     "@types/node": "^16.18.89",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
@@ -16,6 +19,7 @@
     "clipboard": "^2.0.11",
     "clipboard.js": "^1.0.1",
     "copy-to-clipboard": "^3.3.3",
+    "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -24,10 +28,12 @@
     "tiny-segmenter": "^0.2.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
+    "wink-eng-lite-web-model": "^1.5.2",
+    "wink-nlp": "^2.1.0",
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "react-scripts start",
     "build": "react-scripts build --transpileOnly",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

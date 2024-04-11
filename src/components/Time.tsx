@@ -7,7 +7,7 @@ import { genCopy } from "../utils";
 import Title from "./title";
 import Upload from "./upload";
 
-const changeDate = (timeNum: number) => {
+export const changeDate = (timeNum: number) => {
   const d = timeNum - 1;
   const t = Math.round((d - Math.floor(d)) * 24 * 60 * 60);
   return moment(new Date(1900, 0, d, 0, 0, t)).format("YYYY-MM-DD HH:mm:ss");
