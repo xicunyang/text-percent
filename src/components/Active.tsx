@@ -1,7 +1,7 @@
 import React from "react";
 import "./index.css";
 import moment from "moment";
-import { Button, Select, Table } from "antd";
+import { Button, Select, Table, message } from "antd";
 import { genCopy } from "../utils";
 import Title from "./title";
 import Upload from "./upload";
@@ -207,6 +207,7 @@ const Active: React.FC<IProps> = () => {
     });
     content.unshift(title);
     genCopy(content.join("\n"));
+    message.success("复制成功");
   };
   return (
     <div className="time-main">

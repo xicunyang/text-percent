@@ -8,14 +8,14 @@ const { Dragger } = AntUpload;
 interface IProps {
   onChange?: (json: any[]) => void;
   width?: string;
-  titleText?: string;
+  titleText?: React.ReactNode;
   secText?: string;
   isCSV?: boolean;
 }
 const Upload: React.FC<IProps> = ({
   width = "600px",
   titleText = "点击或者拖动文件到当前区域进行上传",
-  secText = "文件，数据条数尽量保证小于等于5w条",
+  secText = "文件内数据条数尽量保证小于等于5w条",
   isCSV,
   onChange,
 }) => {

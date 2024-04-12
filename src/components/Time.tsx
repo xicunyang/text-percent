@@ -2,7 +2,7 @@ import React from "react";
 import "./index.css";
 import moment from "moment";
 import { calcTime, formatTime } from "./helper";
-import { Button, Table, Tooltip } from "antd";
+import { Button, Table, Tooltip, message } from "antd";
 import { genCopy } from "../utils";
 import Title from "./title";
 import Upload from "./upload";
@@ -84,6 +84,7 @@ const Time: React.FC<IProps> = () => {
                   // @ts-ignore
                   const text = result.map((i) => i.isSame).join("\n");
                   genCopy(text);
+                  message.success("复制成功");
                 }}
               >
                 复制【时间是否准确】列
@@ -95,6 +96,7 @@ const Time: React.FC<IProps> = () => {
                   // @ts-ignore
                   const text = result.map((i) => i.pickTime).join("\n");
                   genCopy(text);
+                  message.success("复制成功");
                 }}
               >
                 复制【文本内的时间】列

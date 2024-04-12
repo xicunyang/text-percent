@@ -1,7 +1,7 @@
 {
   "name": "text-percent",
   "version": "0.1.0",
-"homepage": "https://xicunyang.github.io/text-percent",
+  "homepage": "https://xicunyang.github.io/text-percent",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.8.3",

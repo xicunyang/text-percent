@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Button, InputNumber, Table, Tooltip } from "antd";
+import { Button, InputNumber, Table, Tooltip, message } from "antd";
 import "./App.css";
 // @ts-ignore
 import * as XLSX from "xlsx";
@@ -291,6 +291,7 @@ function App() {
               onClick={() => {
                 const text = resultArr.current.map((i) => i.percent).join("\n");
                 genCopy(text);
+                message.success("复制成功");
               }}
             >
               复制相似度结果
@@ -303,6 +304,7 @@ function App() {
               onClick={() => {
                 const text = resultArr.current.map((i) => i.target).join("\n");
                 genCopy(text);
+                message.success("复制成功");
               }}
             >
               复制相似度文案
