@@ -43,25 +43,25 @@ const Keyword: React.FC<IProps> = () => {
       const excludes: string[] = [];
       if (includeTextArr.length) {
         // 任一关键词包含
-        hasInclude = includeTextArr.some((includeText) => {
+        hasInclude = includeTextArr.map((includeText) => {
           if (content.includes(includeText)) {
             includes.push(includeText);
             return true;
           }
-        });
+        }).some(Boolean)
       } else {
         hasInclude = true;
       }
 
       if (excludeTextArr.length) {
         // 任一关键词排除
-        hasExclude = excludeTextArr.some((excludeText) => {
+        hasExclude = excludeTextArr.map((excludeText) => {
           if (content.includes(excludeText)) {
             excludes.push(excludeText);
             return false;
           }
           return true;
-        });
+        }).some(i => !Boolean(i))
       } else {
         hasExclude = true;
       }
@@ -79,8 +79,6 @@ const Keyword: React.FC<IProps> = () => {
         excludes: excludes.join("、"),
       };
     });
-    console.log("result:::", result);
-
     // @ts-ignore
     setResult(result);
   };
@@ -94,7 +92,7 @@ const Keyword: React.FC<IProps> = () => {
 
   return (
     <div className="time-main">
-      <Title title="关键词过滤 ( v1.0 )" />
+      <Title title="关键词过滤 ( v1.1 )" />
 
       <div style={{ display: "flex", alignItems: "center" }}>
         <div>
