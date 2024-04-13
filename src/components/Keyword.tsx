@@ -53,6 +53,8 @@ const Keyword: React.FC<IProps> = () => {
         hasInclude = true;
       }
 
+      // const show = content === "今日我村李兆得和他岭居用故宅基地发纠纷经过我们调解没有什么事了";
+
       if (excludeTextArr.length) {
         // 任一关键词排除
         hasExclude = excludeTextArr.map((excludeText) => {
@@ -66,8 +68,13 @@ const Keyword: React.FC<IProps> = () => {
         hasExclude = true;
       }
 
+      // if(show) {
+      //   console.log('hasExclude:::', content, hasExclude);
+        
+      // }
+
       // 任一关键词包含 & 任一关键词排除 都命中，记录
-      if (hasInclude && hasExclude) {
+      if (hasInclude && !hasExclude) {
         flag = "是";
       }
 
@@ -92,7 +99,7 @@ const Keyword: React.FC<IProps> = () => {
 
   return (
     <div className="time-main">
-      <Title title="关键词过滤 ( v1.1 )" />
+      <Title title="关键词过滤 ( v1.2 )" />
 
       <div style={{ display: "flex", alignItems: "center" }}>
         <div>
