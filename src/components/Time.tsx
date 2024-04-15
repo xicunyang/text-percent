@@ -25,7 +25,7 @@ const Time: React.FC<IProps> = () => {
 
   const handleDoCalc = () => {
     const contentArr = uploadJsonArr.map((item) => {
-      const time = item["上报时间"];
+      const time = item["CREATEDATE"];
       const _time = typeof time === "number" ? changeDate(time) : "-";
 
       const calcRes = calcTime(item["内容"]);
@@ -52,7 +52,7 @@ const Time: React.FC<IProps> = () => {
 
   return (
     <div className="time-main">
-      <Title title="时间合法过滤 ( v1.1 )" />
+      <Title title="时间合法过滤 ( v1.2 )" />
 
       <Upload onChange={handleUploadChange} />
 
