@@ -7,6 +7,7 @@ const { Dragger } = AntUpload;
 
 interface IProps {
   onChange?: (json: any[]) => void;
+  onHeaderChange?: (json: any[]) => void;
   width?: string;
   titleText?: React.ReactNode;
   secText?: string;
@@ -18,6 +19,7 @@ const Upload: React.FC<IProps> = ({
   secText = "文件内数据条数尽量保证小于等于5w条",
   isCSV,
   onChange,
+  onHeaderChange,
 }) => {
   const handleChange = (info: any) => {
     if (info.fileList?.length) {
@@ -25,11 +27,16 @@ const Upload: React.FC<IProps> = ({
       setTimeout(async () => {
         if (info.file) {
           if (isCSV) {
-            const res = await formatCSVFileToJson(info.file);
-            res && onChange?.(res as any[]);
+            // const res = await formatCSVFileToJson(info.file);
+            // res && onChange?.(res as any[]);
           } else {
-            const res = await formatXlsxFileToJson(info.file);
-            res && onChange?.(res as any[]);
+            const res = await formatXlsxFileToJson(info.file, Boolean(onHeaderChange));
+            if(res) {
+              onChange?.((res as any).jsonArr as any[]);
+              if(Boolean(onHeaderChange)) {
+                onHeaderChange?.((res as any)?.header as any);
+              }
+            }
           }
         }
         message.destroy();

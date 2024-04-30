@@ -14,6 +14,7 @@ import {
 import _, { unionBy } from "lodash";
 
 const DefaultSelectTitles = ["区县", "街道", "村", "网格"];
+const FixRows = ["B", "C", "D", "E"];
 const DefaultSelectTitlesForAction = [
   "(SELECTC.ORGNAMEFROMORGANIZATIONSCWHEREC.ID=(SELECTB.PARENTIDFROMORGANIZATIONSBWHEREB.ID=(SELECTA.PARENTIDFROMORGANIZATIONSAWHEREA.ID=ORG.PARENTID)))",
   "(SELECTB.ORGNAMEFROMORGANIZATIONSBWHEREB.ID=(SELECTA.PARENTIDFROMORGANIZATIONSAWHEREA.ID=ORG.PARENTID))",
@@ -42,7 +43,6 @@ const Active: React.FC<IProps> = () => {
   };
 
   const usualWorkTitles = React.useMemo(() => {
-    setSelectTitles([]);
     handleReset();
     if (uploadJsonArr.length) {
       const firstRow = uploadJsonArr[0];
@@ -65,7 +65,6 @@ const Active: React.FC<IProps> = () => {
   }, [allGridArr]);
 
   const actionTitles = React.useMemo(() => {
-    setSelectTitlesForAction([]);
     handleReset();
     if (uploadJsonArrForAction.length) {
       const firstRow = uploadJsonArrForAction[0];
@@ -119,16 +118,17 @@ const Active: React.FC<IProps> = () => {
 
       let dynamicMap: Record<string, number> = {};
       allDays.forEach((day) => {
-        let isWork =false;
+        let isWork = false;
         let isAction = false;
         if (result[resultKey].workDays?.includes(day)) {
-          isWork =true;
+          isWork = true;
         }
         if (result[resultKey].actionDays?.includes(day)) {
           isAction = true;
         }
         // @ts-ignore
-        dynamicMap[day] = isWork && isAction ? 1 : isAction ? 1 : isWork ? 2 : "";
+        dynamicMap[day] =
+          isWork && isAction ? 1 : isAction ? 1 : isWork ? 2 : "";
       });
 
       return {
@@ -209,9 +209,10 @@ const Active: React.FC<IProps> = () => {
     genCopy(content.join("\n"));
     message.success("复制成功");
   };
+
   return (
     <div className="time-main">
-      <Title title="网格活跃度 ( v1.0 )" />
+      <Title title="网格活跃度 ( v1.1 )" />
 
       <div style={{ display: "flex" }}>
         <div style={{ marginRight: "8px" }}>
@@ -225,12 +226,39 @@ const Active: React.FC<IProps> = () => {
           <Upload
             width="100%"
             onChange={setUploadJsonArr}
+            onHeaderChange={(headers) => {
+              const firstRow = headers?.[0];
+              if (firstRow) {
+                const result = Object.keys(firstRow)
+                  .map((key) => {
+                    if (FixRows.includes(key)) {
+                      return firstRow[key];
+                    }
+                  })
+                  .filter(Boolean);
+                setSelectTitles(result);
+              }
+            }}
             titleText="请上传《例行工作》Excel"
           />
         </div>
         <Upload
           width="100%"
           onChange={setUploadJsonArrForAction}
+          onHeaderChange={(headers) => {
+            const firstRow = headers?.[0];
+            if (firstRow) {
+              const result = Object.keys(firstRow)
+                .map((key) => {
+                  if (FixRows.includes(key)) {
+                    return firstRow[key];
+                  }
+                })
+                .filter(Boolean);
+
+              setSelectTitlesForAction(result);
+            }
+          }}
           titleText="请上传《事件》Excel"
         />
       </div>
