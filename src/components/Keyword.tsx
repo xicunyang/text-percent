@@ -35,7 +35,7 @@ const Keyword: React.FC<IProps> = () => {
 
   const handleCalc = () => {
     const result = uploadJsonArr.map((item) => {
-      const content: string = item.内容;
+      const content: string = String(item.内容);
       let flag = "否";
       let hasInclude = false;
       let hasExclude = false;
@@ -80,7 +80,7 @@ const Keyword: React.FC<IProps> = () => {
 
       return {
         // name: item.name,
-        content: item.内容,
+        content: String(item.内容),
         flag,
         includes: includes.join("、"),
         excludes: excludes.join("、"),

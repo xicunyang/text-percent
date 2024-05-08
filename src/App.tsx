@@ -151,7 +151,7 @@ function App() {
     handleReset();
 
     const contentArr = jsonList.map((item) => {
-      return item["内容"]?.replaceAll("\n", "");
+      return (item["内容"] ? String(item["内容"]) : item["内容"])?.replaceAll("\n", "");
     });
 
     setUploadJsonArr(contentArr);

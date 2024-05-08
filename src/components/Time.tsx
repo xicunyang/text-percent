@@ -24,27 +24,32 @@ const Time: React.FC<IProps> = () => {
   };
 
   const handleDoCalc = () => {
-    const contentArr = uploadJsonArr.map((item) => {
-      const time = item["CREATEDATE"];
-      const _time = typeof time === "number" ? changeDate(time) : "-";
+    const contentArr = uploadJsonArr.map((item, index) => {
+      try {
+        const time = item["CREATEDATE"];
 
-      const calcRes = calcTime(item["内容"]);
+        const _time = typeof time === "number" ? changeDate(time) : "-";
 
-      const pickTime = formatTime(calcRes.matches?.[0] || "文本内无时间");
-      const times = moment(_time).format("MM-DD");
-      const isSame =
-        pickTime && pickTime === times
-          ? "符合"
-          : pickTime === "文本内无时间"
-          ? "文本无时间"
-          : "时间不吻合";
-      return {
-        res0: calcRes.matches?.[0],
-        content: item["内容"],
-        pickTime,
-        time: times,
-        isSame,
-      };
+        const calcRes = calcTime(String(item["内容"]));
+
+        const pickTime = formatTime(calcRes.matches?.[0] || "文本内无时间");
+        const times = moment(_time).format("MM-DD");
+        const isSame =
+          pickTime && pickTime === times
+            ? "符合"
+            : pickTime === "文本内无时间"
+            ? "文本无时间"
+            : "时间不吻合";
+        return {
+          res0: calcRes.matches?.[0],
+          content: String(item["内容"]),
+          pickTime,
+          time: times,
+          isSame,
+        };
+      } catch (e) {
+        console.log("e:::", index, item, e);
+      }
     });
     // @ts-ignore
     setResult(contentArr);
