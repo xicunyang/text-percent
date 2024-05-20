@@ -39,14 +39,14 @@ function App() {
     setProcessArr([]);
     resultArr.current = [];
     setRefreshKey(new Date().getTime());
-  }
+  };
 
   React.useEffect(() => {
     worker.onmessage = function (e) {
       // @ts-ignore
       if (e.data.type === "preSplit") {
         worker.terminate();
-        
+
         const SPLIT_NUM = splitNum;
         const splitRes = e.data.data;
         const { origin: originArr, split: splitArr } = splitRes;
@@ -151,7 +151,9 @@ function App() {
     handleReset();
 
     const contentArr = jsonList.map((item) => {
-      return (item["内容"] ? String(item["内容"]) : item["内容"])?.replaceAll("\n", "");
+      return (
+        item["内容"] !== undefined ? String(item["内容"]) : item["内容"]
+      )?.replaceAll("\n", "");
     });
 
     setUploadJsonArr(contentArr);
